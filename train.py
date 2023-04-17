@@ -6,6 +6,7 @@ import argparse
 import torch
 import time
 import numpy as np
+import tqdm
 from tensorboardX import SummaryWriter
 
 from trainer import Trainer
@@ -47,7 +48,7 @@ if __name__ == '__main__':
     iterations = trainer.resume(checkpoint_directory) if args.resume else 0
     while True:
         with torch.autograd.set_detect_anomaly(True):
-
+            pbar=tqdm.tqdm(initial=0, total=max_iter)
             for it, (imgs, label) in enumerate(train_dataloader):
                 trainer.update_lr(iterations, max_iter)
                 imgs = imgs.cuda()
@@ -75,6 +76,7 @@ if __name__ == '__main__':
                     print('Saved model at iteration %d' % (iterations + 1))
 
                 iterations += 1
+                pbar.update(1)
                 if iterations >= max_iter:
                     print("Finish Training")
                     sys.exit(0)
