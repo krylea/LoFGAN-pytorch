@@ -51,7 +51,7 @@ if __name__ == '__main__':
     iterations = trainer.resume(checkpoint_directory) if args.resume else 0
     while True:
         with torch.autograd.set_detect_anomaly(True):
-            pbar=tqdm.tqdm(initial=0, total=max_iter)
+            pbar=tqdm.tqdm(initial=iterations, total=max_iter)
             for it, (imgs, label) in enumerate(train_dataloader):
                 trainer.update_lr(iterations, max_iter)
                 imgs = imgs.cuda()
