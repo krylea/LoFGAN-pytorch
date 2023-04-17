@@ -22,9 +22,12 @@ args = parser.parse_args()
 config = get_config(args.conf)
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
 
+args.resume = os.path.exists(args.output_dir)
+
 output_directory = args.output_dir
-remove_first = not args.resume
+remove_first = False#not args.resume
 checkpoint_directory, image_directory, log_directory = make_result_folders(output_directory, remove_first=remove_first)
+
 shutil.copy(args.conf, os.path.join(output_directory, 'configs.yaml'))
 train_writer = SummaryWriter(log_directory)
 max_iter = config['max_iter']
