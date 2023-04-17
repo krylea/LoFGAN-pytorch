@@ -9,6 +9,8 @@
 #SBATCH --mem=25GB
 #SBATCH --exclude=gpu109
 
-python train.py --conf configs/animal_lofgan.yaml \
---output_dir results/animal_lofgan \
+dataset=$1
+
+python train.py --conf configs/${dataset}_lofgan.yaml \
+--output_dir results/${dataset}_lofgan \
 --gpu 0
