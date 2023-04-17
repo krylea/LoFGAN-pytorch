@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=AGE
+#SBATCH --job-name=lofgan
 #SBATCH --output=logs/slurm-%j.txt
 #SBATCH --open-mode=append
 #SBATCH --ntasks=1
