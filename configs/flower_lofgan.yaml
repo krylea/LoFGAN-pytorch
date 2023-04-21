@@ -35,4 +35,4 @@ n_sample_train: 3
 n_sample_val: 3
 n_sample_test: 3
 num_generate: 10
-data_root: datasets/flower_c8189_s128_data_rgb.npy
+data_root: datasets/flowers.npy

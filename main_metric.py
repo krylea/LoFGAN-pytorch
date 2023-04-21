@@ -18,8 +18,8 @@ def fid(real, fake, gpu):
     print('Calculating FID...')
     print('real dir: {}'.format(real))
     print('fake dir: {}'.format(fake))
-    command = 'python -m pytorch_fid {} {} --gpu {}'.format(real, fake, gpu)  # pytorch-fid 0.1.1
-    # command = 'python -m pytorch_fid {} {} --device cuda:{}'.format(real, fake, gpu)  # pytorch-fid 0.2.1
+    # command = 'python -m pytorch_fid {} {} --gpu {}'.format(real, fake, gpu)  # pytorch-fid 0.1.1
+    command = 'python -m pytorch_fid {} {} --device cuda:{}'.format(real, fake, gpu)  # pytorch-fid 0.2.1
     # command = 'python -m pytorch_fid {} {}'.format(real, fake)
     os.system(command)
 
