@@ -13,15 +13,19 @@ import torchvision.transforms as transforms
 from trainer import Trainer
 from utils import get_config, unloader, get_model_list
 
+from fid import calculate_fid_given_paths
 
-def fid(real, fake, gpu):
+def fid(real, fake, gpu, batch_size=50, dims=2048):
     print('Calculating FID...')
     print('real dir: {}'.format(real))
     print('fake dir: {}'.format(fake))
     # command = 'python -m pytorch_fid {} {} --gpu {}'.format(real, fake, gpu)  # pytorch-fid 0.1.1
-    command = 'python -m pytorch_fid {} {} --device cuda:{}'.format(real, fake, gpu)  # pytorch-fid 0.2.1
+    #command = 'python -m pytorch_fid {} {} --device cuda:{}'.format(real, fake, gpu)  # pytorch-fid 0.2.1
     # command = 'python -m pytorch_fid {} {}'.format(real, fake)
-    os.system(command)
+    #os.system(command)
+
+    device = torch.device(gpu)
+    fid = calculate_fid_given_paths(real, fake, batch_size=batch_size, device=deice, dims=dims)
 
 
 def LPIPS(root):
