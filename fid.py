@@ -107,7 +107,7 @@ def get_activations(files, model, batch_size=50, dims=2048, device='cpu'):
                                              drop_last=False,
                                              num_workers=cpu_count())
 
-    pred_arr = np.empty((len(files), dims))
+    pred_arr = torch.empty((len(files), dims))
 
     start_idx = 0
 
@@ -122,11 +122,11 @@ def get_activations(files, model, batch_size=50, dims=2048, device='cpu'):
         if pred.size(2) != 1 or pred.size(3) != 1:
             pred = adaptive_avg_pool2d(pred, output_size=(1, 1))
 
-        pred = pred.squeeze(3).squeeze(2).cpu().numpy()
+        pred = pred.squeeze(3).squeeze(2).cpu()
 
-        pred_arr[start_idx:start_idx + pred.shape[0]] = pred
+        pred_arr[start_idx:start_idx + pred.size(0)] = pred
 
-        start_idx = start_idx + pred.shape[0]
+        start_idx = start_idx + pred.size(0)
 
     return pred_arr
 
@@ -202,13 +202,11 @@ def calculate_activation_statistics(files, model, batch_size=50, dims=2048,
     -- sigma : The covariance matrix of the activations of the pool_3 layer of
                the inception model.
     """
-    print("\tstart acts")
     act = get_activations(files, model, batch_size, dims, device)
-    print("\tfinished acts")
-    mu = np.mean(act, axis=0)
-    sigma = np.cov(act, rowvar=False)
-    print("\tfinished ss")
-    return mu, sigma
+    mu = act.mean(dim=0)
+    Anorm = (act - mu.unsqueeze(0)).cuda()
+    sigma = Anorm.t().matmul(Anorm)
+    return mu.numpy(), sigma.cpu().numpy()
 
 
 def compute_statistics_of_path(path, model, batch_size, dims, device):
