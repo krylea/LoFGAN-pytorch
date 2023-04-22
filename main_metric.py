@@ -25,7 +25,7 @@ def fid(real, fake, gpu, batch_size=50, dims=2048):
     #os.system(command)
 
     device = torch.device(gpu)
-    fid = calculate_fid_given_paths(real, fake, batch_size=batch_size, device=deice, dims=dims)
+    fid = calculate_fid_given_paths(real, fake, batch_size=batch_size, device=device, dims=dims)
 
 
 def LPIPS(root):
@@ -105,6 +105,9 @@ if __name__ == '__main__':
     elif args.dataset == 'animal':
         data = data[119:]
         num = 10
+    elif args.dataset == 'animal2':
+        data = np.load("datasets/animal2.npy")
+        num = 10
     elif args.dataset == 'vggface':
         data = data[1802:]
         num = 30
@@ -113,7 +116,7 @@ if __name__ == '__main__':
     data = data[:, per, :, :, :]
 
     data_for_gen = data[:, :num, :, :, :]
-    data_for_fid = data[:, num:, :, :, :]
+    data_for_fid = data[:, num:num+128, :, :, :]
 
     # if os.path.exists(real_dir):
     #     for cls in tqdm(range(data_for_fid.shape[0]), desc='preparing real images'):
@@ -129,8 +132,11 @@ if __name__ == '__main__':
     if os.path.exists(real_dir):
         for cls in tqdm(range(data_for_fid.shape[0]), desc='preparing real images'):
             for i in range(128):
-                idx = np.random.choice(data_for_fid.shape[1], 1)
-                real_img = data_for_fid[cls, idx, :, :, :][0]
+                if data_for_fid.shape[1] < 128:
+                    idx = np.random.choice(data_for_fid.shape[1], 1).item()
+                else:
+                    idx = i
+                real_img = data_for_fid[cls, idx, :, :, :]
                 if args.dataset == 'vggface':
                     real_img *= 255
                 real_img = Image.fromarray(np.uint8(real_img))

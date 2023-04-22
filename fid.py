@@ -204,8 +204,7 @@ def calculate_activation_statistics(files, model, batch_size=50, dims=2048,
     """
     act = get_activations(files, model, batch_size, dims, device)
     mu = act.mean(dim=0)
-    Anorm = (act - mu.unsqueeze(0)).cuda()
-    sigma = Anorm.t().matmul(Anorm)
+    sigma = torch.cov(act.t())
     return mu.numpy(), sigma.cpu().numpy()
 
 
