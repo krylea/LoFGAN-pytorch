@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-#SBATCH --job-name=setgan2eval
+#SBATCH --job-name=lofgan-eval
 #SBATCH --output=logs/slurm-%j.txt
 #SBATCH --open-mode=append
 #SBATCH --ntasks=1
 #SBATCH --gres=gpu:1
-#SBATCH --partition=a40
+#SBATCH --partition=rtx6000,t4v1
 #SBATCH --cpus-per-gpu=4
 #SBATCH --mem=25GB
 #SBATCH --exclude=gpu109
