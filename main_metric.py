@@ -25,7 +25,7 @@ def fid(real, fake, gpu, batch_size=50, dims=2048):
     #os.system(command)
 
     device = torch.device(gpu)
-    fid_score = calculate_fid_given_paths(real, fake, batch_size=batch_size, device=device, dims=dims)
+    fid_score = calculate_fid_given_paths((real, fake), batch_size=batch_size, device=device, dims=dims)
     return fid_score
 
 
