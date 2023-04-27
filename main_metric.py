@@ -149,15 +149,18 @@ if __name__ == '__main__':
     if args.dataset == 'flower':
         if args.use_modified_datasets:
             data = np.load("datasets/flowers2.npy")
-        data = data[85:]
+        else:
+            data = data[85:]
     elif args.dataset == 'animal':
         if args.use_modified_datasets:
             data = np.load("datasets/animal2.npy")
-        data = data[119:]
+        else:
+            data = data[119:]
     elif args.dataset == 'vggface':
         if args.use_modified_datasets:
             data = np.load("datasets/vggface2.npy")
-        data = data[1802:]
+        else:
+            data = data[1802:]
 
     trainer = Trainer(config)
     if args.ckpt:
