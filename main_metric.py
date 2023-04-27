@@ -64,6 +64,13 @@ def LPIPS(root):
 
 
 def eval_scores(data, n_cond, trainer, real_dir, fake_dir, transform):
+    if os.path.exists(fake_dir):
+        shutil.rmtree(fake_dir)
+    os.makedirs(fake_dir, exist_ok=True)
+    if os.path.exists(real_dir):
+        shutil.rmtree(real_dir)
+    os.makedirs(real_dir, exist_ok=True)
+
     per = np.random.permutation(data.shape[1])
     data = data[:, per, :, :, :]
 
@@ -137,12 +144,6 @@ if __name__ == '__main__':
     print('real dir: ', real_dir)
     print('fake dir: ', fake_dir)
 
-    if os.path.exists(fake_dir):
-        shutil.rmtree(fake_dir)
-    os.makedirs(fake_dir, exist_ok=True)
-    if os.path.exists(real_dir):
-        shutil.rmtree(real_dir)
-    os.makedirs(real_dir, exist_ok=True)
 
     data = np.load(config['data_root'])
     if args.dataset == 'flower':

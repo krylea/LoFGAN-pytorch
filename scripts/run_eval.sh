@@ -17,8 +17,8 @@ use_modified_datasets=${3:-0}
 
 argstring="--gpu 0 --dataset $dataset \
 --name results/${dataset}_lofgan \
---real_dir datasets/for_fid/${dataset}_${n} --ckpt gen_00100000.pt \
---fake_dir test_for_fid_${n} --n_cond $n --n_exps $N_EXPS"
+--real_dir datasets/for_fid/${dataset}_${n}_${use_modified_datasets} --ckpt gen_00100000.pt \
+--fake_dir test_for_fid_${n}_${use_modified_datasets} --n_cond $n --n_exps $N_EXPS"
 
 if [ $use_modified_datasets -eq 1 ]
 then
