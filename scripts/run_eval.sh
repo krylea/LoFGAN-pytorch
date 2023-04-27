@@ -15,6 +15,6 @@ dataset=$1
 n=$2
 
 python main_metric.py --gpu 0 --dataset $dataset \
---name results/${dataset}_${n}_lofgan \
---real_dir datasets/for_fid/$dataset --ckpt gen_00100000.pt \
+--name results/${dataset}_lofgan \
+--real_dir datasets/for_fid/${dataset}_${n} --ckpt gen_00100000.pt \
 --fake_dir test_for_fid_${n} --n_cond $n --n_exps $N_EXPS
