@@ -113,6 +113,7 @@ parser.add_argument('--n_test', type=int, default=3)
 parser.add_argument('--n_cond', type=int, default=10)
 parser.add_argument('--n_exps', type=int, default=3)
 parser.add_argument('--eval_path', type=str, default="eval_results.txt")
+parser.add_argument('--use_modified_datasets', action='store_true')
 args = parser.parse_args()
 
 conf_file = os.path.join(args.name, 'configs.yaml')

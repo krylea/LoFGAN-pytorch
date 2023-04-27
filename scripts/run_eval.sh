@@ -13,8 +13,16 @@ N_EXPS=3
 
 dataset=$1
 n=$2
+use_modified_datasets=${3:-0}
 
-python main_metric.py --gpu 0 --dataset $dataset \
+argstring="--gpu 0 --dataset $dataset \
 --name results/${dataset}_lofgan \
 --real_dir datasets/for_fid/${dataset}_${n} --ckpt gen_00100000.pt \
---fake_dir test_for_fid_${n} --n_cond $n --n_exps $N_EXPS
+--fake_dir test_for_fid_${n} --n_cond $n --n_exps $N_EXPS"
+
+if [ $use_modified_datasets -eq 1 ]
+then
+    argstring="${argstring} --use_modified_datasets"
+fi
+
+python main_metric.py $argstring
