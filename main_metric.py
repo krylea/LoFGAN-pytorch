@@ -146,12 +146,16 @@ if __name__ == '__main__':
 
     data = np.load(config['data_root'])
     if args.dataset == 'flower':
+        if args.use_modified_datasets:
+            data = np.load("datasets/flowers2.npy")
         data = data[85:]
     elif args.dataset == 'animal':
+        if args.use_modified_datasets:
+            data = np.load("datasets/animal2.npy")
         data = data[119:]
-    elif args.dataset == 'animal2':
-        data = np.load("datasets/animal2.npy")
     elif args.dataset == 'vggface':
+        if args.use_modified_datasets:
+            data = np.load("datasets/vggface2.npy")
         data = data[1802:]
 
     trainer = Trainer(config)
