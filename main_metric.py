@@ -80,10 +80,10 @@ def eval_scores(data, n_cond, trainer, real_dir, fake_dir, transform):
     if os.path.exists(real_dir):
         for cls in tqdm(range(data_for_fid.shape[0]), desc='preparing real images'):
             for i in range(128):
-                if data_for_fid.shape[1] < 128:
-                    idx = np.random.choice(data_for_fid.shape[1], 1).item()
-                else:
-                    idx = i
+                #if data_for_fid.shape[1] < 128:
+                idx = np.random.choice(data_for_fid.shape[1], 1).item()
+                #else:
+                    #idx = i
                 real_img = data_for_fid[cls, idx, :, :, :]
                 if args.dataset == 'vggface':
                     real_img *= 255
