@@ -64,11 +64,11 @@ def LPIPS(root):
 
 
 def eval_scores(data, n_cond, trainer, real_dir, fake_dir, transform):
-    if os.path.exists(fake_dir):
-        shutil.rmtree(fake_dir)
+    #if os.path.exists(fake_dir):
+    #    shutil.rmtree(fake_dir)
     os.makedirs(fake_dir, exist_ok=True)
-    if os.path.exists(real_dir):
-        shutil.rmtree(real_dir)
+    #if os.path.exists(real_dir):
+    #    shutil.rmtree(real_dir)
     os.makedirs(real_dir, exist_ok=True)
 
     per = np.random.permutation(data.shape[1])
@@ -80,25 +80,31 @@ def eval_scores(data, n_cond, trainer, real_dir, fake_dir, transform):
     if os.path.exists(real_dir):
         for cls in tqdm(range(data_for_fid.shape[0]), desc='preparing real images'):
             for i in range(128):
-                #if data_for_fid.shape[1] < 128:
-                idx = np.random.choice(data_for_fid.shape[1], 1).item()
-                #else:
-                    #idx = i
-                real_img = data_for_fid[cls, idx, :, :, :]
-                if args.dataset == 'vggface':
-                    real_img *= 255
-                real_img = Image.fromarray(np.uint8(real_img))
-                real_img.save(os.path.join(real_dir, '{}_{}.png'.format(cls, str(i).zfill(3))), 'png')
+                if data_for_fid.shape[1] < 128:
+                    idx = np.random.choice(data_for_fid.shape[1], 1).item()
+                else:
+                    idx = i
+            #for i in range(data_for_fid.shape[1]):
+                #idx=i
+                imgpath = os.path.join(real_dir, '{}_{}.png'.format(cls, str(i).zfill(3)))
+                if not os.path.exists(imgpath):
+                    real_img = data_for_fid[cls, idx, :, :, :]
+                    if args.dataset == 'vggface':
+                        real_img *= 255
+                    real_img = Image.fromarray(np.uint8(real_img))
+                    real_img.save(imgpath, 'png')
 
     if os.path.exists(fake_dir):
         for cls in tqdm(range(data_for_gen.shape[0]), desc='generating fake images'):
             for i in range(128):
-                idx = np.random.choice(data_for_gen.shape[1], args.n_sample_test)
-                imgs = data_for_gen[cls, idx, :, :, :]
-                imgs = torch.cat([transform(img).unsqueeze(0) for img in imgs], dim=0).unsqueeze(0).cuda()
-                fake_x = trainer.generate(imgs)
-                output = unloader(fake_x[0].cpu())
-                output.save(os.path.join(fake_dir, '{}_{}.png'.format(cls, str(i).zfill(3))), 'png')
+                imgpath = os.path.join(fake_dir, '{}_{}.png'.format(cls, str(i).zfill(3)))
+                if not os.path.exists(imgpath):
+                    idx = np.random.choice(data_for_gen.shape[1], args.n_sample_test)
+                    imgs = data_for_gen[cls, idx, :, :, :]
+                    imgs = torch.cat([transform(img).unsqueeze(0) for img in imgs], dim=0).unsqueeze(0).cuda()
+                    fake_x = trainer.generate(imgs)
+                    output = unloader(fake_x[0].cpu())
+                    output.save(imgpath, 'png')
 
     fid_score=fid(real_dir, fake_dir, int(args.gpu))
     lpips_score=LPIPS(fake_dir)
@@ -113,6 +119,7 @@ parser.add_argument('--name', type=str)
 parser.add_argument('--dataset', type=str)
 parser.add_argument('--real_dir', type=str)
 parser.add_argument('--fake_dir', type=str)
+parser.add_argument('--eval_ckpt', type=str)
 parser.add_argument('--ckpt', type=str, default=None)
 parser.add_argument('--gpu', type=str, default='0')
 parser.add_argument('--n_sample_test', type=int, default=3)
@@ -171,13 +178,22 @@ if __name__ == '__main__':
     trainer.cuda()
     trainer.eval()
     
+    if os.path.exists(args.eval_ckpt):
+        eval_ckpt = torch.load(args.eval_ckpt)
+        fid_scores, lpips_scores = eval_ckpt['fid'], eval_ckpt['lpips']
+        n_exps = args.n_exps - len(fid_scores)
+    else:
+        os.makedirs(os.pardir(args.eval_ckpt))
+        fid_scores = []
+        lpips_scores=[]
+        n_exps = args.n_exps
 
-    fid_scores = []
-    lpips_scores=[]
-    for i in range(args.n_exps):
+
+    for i in range(n_exps):
         fid_score, lpips_score = eval_scores(data, args.n_cond, trainer, real_dir, fake_dir, transform)
         fid_scores.append(fid_score)
         lpips_scores.append(lpips_score)
+        torch.save({'fid': fid_scores, 'lpips': lpips_scores})
     fid_out = sum(fid_scores) / len(fid_scores)
     lpips_out = sum(lpips_scores) / len(lpips_scores)
 
