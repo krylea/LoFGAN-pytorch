@@ -193,7 +193,7 @@ if __name__ == '__main__':
         fid_score, lpips_score = eval_scores(data, args.n_cond, trainer, real_dir, fake_dir, transform)
         fid_scores.append(fid_score)
         lpips_scores.append(lpips_score)
-        torch.save({'fid': fid_scores, 'lpips': lpips_scores})
+        torch.save({'fid': fid_scores, 'lpips': lpips_scores}, args.eval_ckpt)
     fid_out = sum(fid_scores) / len(fid_scores)
     lpips_out = sum(lpips_scores) / len(lpips_scores)
 
