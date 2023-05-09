@@ -183,7 +183,7 @@ if __name__ == '__main__':
         fid_scores, lpips_scores = eval_ckpt['fid'], eval_ckpt['lpips']
         n_exps = args.n_exps - len(fid_scores)
     else:
-        os.makedirs(os.path.dirname(args.eval_ckpt))
+        os.makedirs(os.path.dirname(args.eval_ckpt), exist_ok=True)
         fid_scores = []
         lpips_scores=[]
         n_exps = args.n_exps
